@@ -7,13 +7,12 @@ import cv2
 import glob
 import datetime
 
-# Parameters
-def init():
-   HW_trg=224
-   batch_size =1
-   global myList
-   myList = [HW_trg,batch_size]
- 
+
+HW_trg=224
+batch_size =1
+global myList
+myList = [HW_trg,batch_size]
+
 def process_image(input_img):
     input_img = tf.cast(input_img, tf.float32)
     # op_img = tf.keras.applications.mobilenet_v2.preprocess_input(
