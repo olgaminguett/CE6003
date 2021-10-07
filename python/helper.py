@@ -10,8 +10,9 @@ import datetime
 
 HW_trg=224
 batch_size =1
+data_set = "stanford_dogs"
 global myList
-myList = [HW_trg,batch_size]
+myList = [HW_trg,batch_size,dataset]
 
 def process_image(input_img):
     input_img = tf.cast(input_img, tf.float32)
@@ -88,29 +89,74 @@ def _scale_boxes(boxes, ss_asp_ratio, ls_asp_ratio, ss_frac_offset, ls_frac_offs
         scale_boxes = tf.transpose(tf.stack([r1, r2, r3, r4], axis=0))
     return scale_boxes
 
-def display_image(train_dataset):
-    cntr = 0
-    for img, boxes, obj_cen, labels in train_dataset.take(1):
+def gen_datasets(src_train_dataset, src_test_dataset):
+    # Define Training Datasets
+    train_img_dataset = src_train_dataset.map(lambda x: x['image'])
+    # convert to expected normalised input for VGG-16
+    train_img_dataset = train_img_dataset.map(helper.process_image)
+    if data_set == "voc":
+        train_box_dataset = src_train_dataset.map(lambda x: x['objects']['bbox'])
+        train_label_dataset = src_train_dataset.map(lambda x: x['objects']['label'])
+    if data_set == "stanford_dogs":
+        train_box_dataset = src_train_dataset.map(lambda x: x['objects']['bbox'])
+        train_label_dataset = src_train_dataset.map(lambda x: x['label'])
+
+    # Define test Dataset
+    test_img_dataset = src_test_dataset.map(lambda x: x['image'])
+    test_img_dataset = test_img_dataset.map(helper.process_image)
+    if data_set == "voc":
+        test_box_dataset = src_test_dataset.map(lambda x: x['objects']['bbox'])
+        test_label_dataset = src_test_dataset.map(lambda x: x['objects']['label'])
+    if data_set == "stanford_dogs":
+        test_box_dataset = src_test_dataset.map(lambda x: x['objects']['bbox'])
+        test_label_dataset = src_test_dataset.map(lambda x: x['label'])
+        # Join datasets.
+    train_dataset = tf.data.Dataset.zip((train_img_dataset, train_box_dataset, train_label_dataset))
+    train_dataset = train_dataset.map(helper.scale_pad)
+
+    # train_dataset=train_dataset.shuffle(100,reshuffle_each_iteration=True)
+    #train_dataset = train_dataset.batch(batch_size)
+    train_dataset = train_dataset.apply(tf.data.experimental.dense_to_ragged_batch(batch_size, drop_remainder=True))
+
+
+    test_dataset = tf.data.Dataset.zip((test_img_dataset, test_box_dataset, test_label_dataset))
+    test_dataset = test_dataset.map(helper.scale_pad)
+
+    # test_dataset=test_dataset.shuffle(250)
+    #test_dataset = test_dataset.batch(batch_size)
+    test_dataset = test_dataset.apply(tf.data.experimental.dense_to_ragged_batch(batch_size, drop_remainder=True))
+    return train_dataset, test_dataset
+
+# Adds bounding box to image (boxes in normalised rectuangular form)
+def image_with_gt_boxes(img,boxes):      
+    i = 0
+    for b in boxes:
+       # get the bounding rects from dataset
+       ymin = tf.cast((b[0] * HW_trg), tf.int32)
+       xmin = tf.cast((b[1] * HW_trg), tf.int32)
+       ymax = tf.cast((b[2] * HW_trg), tf.int32)
+       xmax = tf.cast((b[3] * HW_trg), tf.int32)
+       # draw a green rectangle to visualize the bounding rect
+       img = cv2.rectangle((img), (xmin, ymin), (xmax, ymax), (0, 255, 0), 2)
+       i += 1
+     return img
+ 
+# Display images from dataset
+def display_dataset_img(dataset)  
+    fig = plt.figure(figsize=(20, 15))
+    i =0
+    for img, boxes, obj_cen, labels in train_dataset.take(6):
+        # Take first image form each batch
         H_val = np.shape(img)[0]
         W_val = np.shape(img)[1]
         img = img.to_tensor(shape=[batch_size, HW_trg, HW_trg, 3])
         boxes = boxes[0]
         obj_cen = obj_cen[0]
-        new_img = np.asarray(unprocess_image(img[0, :, :, :]))
+        img = np.asarray(unprocess_image(img[0, :, :, :]))
         
-        i = 0
-        for b in boxes:
-            # get the bounding rects from dataset
-            ymin = tf.cast((b[0] * HW_trg), tf.int32)
-            xmin = tf.cast((b[1] * HW_trg), tf.int32)
-            ymax = tf.cast((b[2] * HW_trg), tf.int32)
-            xmax = tf.cast((b[3] * HW_trg), tf.int32)
-            # print(xmin,xmax,ymin,ymax)
-            # draw a green rectangle to visualize the bounding rect
-            centre_int = (HW_trg * obj_cen)
-            centre_int = tf.cast((HW_trg * obj_cen[i, :]), tf.int32)
-            new_img = cv2.rectangle((new_img), (xmin, ymin), (xmax, ymax), (0, 255, 0), 2)
-            new_img = cv2.circle(new_img, (centre_int[1], centre_int[0]), 4, (255, 0, 0), 2)
-            i += 1
-        cntr = cntr + 1
-    plt.imshow(new_img)
+        # Add bouding box and plot
+        img_boxes = image_with_gt_boxes(img,boxes)
+        ax = fig.add_subplot(2, 3, i + 1, xticks=[], yticks=[])
+        i+=1 
+
+    
