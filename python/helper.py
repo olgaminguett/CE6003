@@ -157,6 +157,7 @@ def display_dataset_img(dataset):
         # Add bouding box and plot
         img_boxes = image_with_gt_boxes(img,boxes)
         ax = fig.add_subplot(2, 3, i + 1, xticks=[], yticks=[])
+        ax.imshow(img)
         i+=1 
 
     
