@@ -100,8 +100,6 @@ def display_image(train_dataset):
         
         i = 0
         for b in boxes:
-            print(b)
-            print(labels[i])
             # get the bounding rects from dataset
             ymin = tf.cast((b[0] * HW_trg), tf.int32)
             xmin = tf.cast((b[1] * HW_trg), tf.int32)
@@ -115,5 +113,4 @@ def display_image(train_dataset):
             new_img = cv2.circle(new_img, (centre_int[1], centre_int[0]), 4, (255, 0, 0), 2)
             i += 1
         cntr = cntr + 1
-        print(cntr)
     plt.imshow(new_img)
