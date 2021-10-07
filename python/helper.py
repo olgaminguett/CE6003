@@ -12,7 +12,7 @@ HW_trg=224
 batch_size =1
 data_set = "stanford_dogs"
 global myList
-myList = [HW_trg,batch_size,dataset]
+myList = [HW_trg,batch_size,data_set]
 
 def process_image(input_img):
     input_img = tf.cast(input_img, tf.float32)
