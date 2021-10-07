@@ -139,7 +139,7 @@ def image_with_gt_boxes(img,boxes):
        # draw a green rectangle to visualize the bounding rect
        img = cv2.rectangle((img), (xmin, ymin), (xmax, ymax), (0, 255, 0), 2)
        i += 1
-     return img
+    return img
  
 # Display images from dataset
 def display_dataset_img(dataset)  
