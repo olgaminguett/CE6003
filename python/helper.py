@@ -93,7 +93,7 @@ def gen_datasets(src_train_dataset, src_test_dataset):
     # Define Training Datasets
     train_img_dataset = src_train_dataset.map(lambda x: x['image'])
     # convert to expected normalised input for VGG-16
-    train_img_dataset = train_img_dataset.map(helper.process_image)
+    train_img_dataset = train_img_dataset.map(process_image)
     if data_set == "voc":
         train_box_dataset = src_train_dataset.map(lambda x: x['objects']['bbox'])
         train_label_dataset = src_train_dataset.map(lambda x: x['objects']['label'])
@@ -103,7 +103,7 @@ def gen_datasets(src_train_dataset, src_test_dataset):
 
     # Define test Dataset
     test_img_dataset = src_test_dataset.map(lambda x: x['image'])
-    test_img_dataset = test_img_dataset.map(helper.process_image)
+    test_img_dataset = test_img_dataset.map(process_image)
     if data_set == "voc":
         test_box_dataset = src_test_dataset.map(lambda x: x['objects']['bbox'])
         test_label_dataset = src_test_dataset.map(lambda x: x['objects']['label'])
@@ -112,7 +112,7 @@ def gen_datasets(src_train_dataset, src_test_dataset):
         test_label_dataset = src_test_dataset.map(lambda x: x['label'])
         # Join datasets.
     train_dataset = tf.data.Dataset.zip((train_img_dataset, train_box_dataset, train_label_dataset))
-    train_dataset = train_dataset.map(helper.scale_pad)
+    train_dataset = train_dataset.map(scale_pad)
 
     # train_dataset=train_dataset.shuffle(100,reshuffle_each_iteration=True)
     #train_dataset = train_dataset.batch(batch_size)
@@ -120,7 +120,7 @@ def gen_datasets(src_train_dataset, src_test_dataset):
 
 
     test_dataset = tf.data.Dataset.zip((test_img_dataset, test_box_dataset, test_label_dataset))
-    test_dataset = test_dataset.map(helper.scale_pad)
+    test_dataset = test_dataset.map(scale_pad)
 
     # test_dataset=test_dataset.shuffle(250)
     #test_dataset = test_dataset.batch(batch_size)
