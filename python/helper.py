@@ -7,6 +7,8 @@ import cv2
 import glob
 import datetime
 
+HW_trg=224
+
 def process_image(input_img):
     input_img = tf.cast(input_img, tf.float32)
     # op_img = tf.keras.applications.mobilenet_v2.preprocess_input(
