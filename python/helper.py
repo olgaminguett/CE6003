@@ -142,7 +142,7 @@ def image_with_gt_boxes(img,boxes):
     return img
  
 # Display images from dataset
-def display_dataset_img(dataset)  
+def display_dataset_img(dataset):  
     fig = plt.figure(figsize=(20, 15))
     i =0
     for img, boxes, obj_cen, labels in train_dataset.take(6):
