@@ -128,7 +128,7 @@ def gen_datasets(src_train_dataset, src_test_dataset):
     return train_dataset, test_dataset
 
 # Adds bounding box to image (boxes in normalised rectuangular form)
-def image_with_gt_boxes(img,boxes):      
+def image_with_gt_boxes(img,boxes,colour):      
     i = 0
     for b in boxes:
        # get the bounding rects from dataset
@@ -137,7 +137,7 @@ def image_with_gt_boxes(img,boxes):
        ymax = tf.cast((b[2] * HW_trg), tf.int32)
        xmax = tf.cast((b[3] * HW_trg), tf.int32)
        # draw a green rectangle to visualize the bounding rect
-       img = cv2.rectangle((img), (xmin, ymin), (xmax, ymax), (0, 255, 0), 2)
+       img = cv2.rectangle((img), (xmin, ymin), (xmax, ymax), colour, 2)
        i += 1
     return img
  
@@ -155,7 +155,8 @@ def display_dataset_img(dataset):
         img = np.asarray(unprocess_image(img[0, :, :, :]))
         
         # Add bouding box and plot
-        img_boxes = image_with_gt_boxes(img,boxes)
+        colour=(0, 255, 0)
+        img_boxes = image_with_gt_boxes(img,boxes,colour)
         ax = fig.add_subplot(2, 3, i + 1, xticks=[], yticks=[])
         ax.imshow(img)
         i+=1 
