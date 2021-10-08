@@ -145,7 +145,7 @@ def image_with_gt_boxes(img,boxes):
 def display_dataset_img(dataset):  
     fig = plt.figure(figsize=(20, 15))
     i =0
-    for img, boxes, obj_cen, labels in train_dataset.take(6):
+    for img, boxes, obj_cen, labels in dataset.take(6):
         # Take first image form each batch
         H_val = np.shape(img)[0]
         W_val = np.shape(img)[1]
