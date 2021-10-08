@@ -143,7 +143,7 @@ def image_with_gt_boxes(img,boxes,colour):
  
 # Display images from dataset
 def display_dataset_img(dataset):  
-    fig = plt.figure(figsize=(20, 15))
+    fig = plt.figure(figsize=(10, 7))
     i =0
     for img, boxes, obj_cen, labels in dataset.take(6):
         # Take first image form each batch
