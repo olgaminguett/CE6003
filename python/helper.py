@@ -89,7 +89,7 @@ def _scale_boxes(boxes, ss_asp_ratio, ls_asp_ratio, ss_frac_offset, ls_frac_offs
         scale_boxes = tf.transpose(tf.stack([r1, r2, r3, r4], axis=0))
     return scale_boxes
 
-def gen_datasets(src_train_dataset, src_test_dataset):
+def gen_datasets(data_set,src_train_dataset, src_test_dataset):
     # Define Training Datasets
     train_img_dataset = src_train_dataset.map(lambda x: x['image'])
     # convert to expected normalised input for VGG-16
