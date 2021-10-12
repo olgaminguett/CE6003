@@ -10,9 +10,9 @@ import datetime
 
 HW_trg=224
 batch_size =1
-data_set = "wider_face"
+
 global myList
-myList = [HW_trg,batch_size,data_set]
+myList = [HW_trg,batch_size]
 
 def process_image(input_img):
     input_img = tf.cast(input_img, tf.float32)
