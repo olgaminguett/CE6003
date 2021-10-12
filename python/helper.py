@@ -10,7 +10,7 @@ import datetime
 
 HW_trg=224
 batch_size =1
-data_set = "stanford_dogs"
+data_set = "wider_face"
 global myList
 myList = [HW_trg,batch_size,data_set]
 
@@ -100,7 +100,7 @@ def gen_datasets(src_train_dataset, src_test_dataset):
     elif data_set == "stanford_dogs":
         train_box_dataset = src_train_dataset.map(lambda x: x['objects']['bbox'])
         train_label_dataset = src_train_dataset.map(lambda x: x['label'])
-     elif data_set == "wider_face":
+    elif data_set == "wider_face":
         train_box_dataset = src_train_dataset.map(lambda x: x['faces']['bbox'])
         train_label_dataset = src_train_dataset.map(lambda x: x['faces']['blur'])
         
