@@ -97,19 +97,25 @@ def gen_datasets(src_train_dataset, src_test_dataset):
     if data_set == "voc":
         train_box_dataset = src_train_dataset.map(lambda x: x['objects']['bbox'])
         train_label_dataset = src_train_dataset.map(lambda x: x['objects']['label'])
-    if data_set == "stanford_dogs":
+    elif data_set == "stanford_dogs":
         train_box_dataset = src_train_dataset.map(lambda x: x['objects']['bbox'])
         train_label_dataset = src_train_dataset.map(lambda x: x['label'])
-
+     elif data_set == "wider_face":
+        train_box_dataset = src_train_dataset.map(lambda x: x['faces']['bbox'])
+        train_label_dataset = src_train_dataset.map(lambda x: x['faces']['blur'])
+        
     # Define test Dataset
     test_img_dataset = src_test_dataset.map(lambda x: x['image'])
     test_img_dataset = test_img_dataset.map(process_image)
     if data_set == "voc":
         test_box_dataset = src_test_dataset.map(lambda x: x['objects']['bbox'])
         test_label_dataset = src_test_dataset.map(lambda x: x['objects']['label'])
-    if data_set == "stanford_dogs":
+    elif data_set == "stanford_dogs":
         test_box_dataset = src_test_dataset.map(lambda x: x['objects']['bbox'])
         test_label_dataset = src_test_dataset.map(lambda x: x['label'])
+    elif data_set == "wider_face":
+        test_box_dataset = src_test_dataset.map(lambda x: x['faces']['bbox'])    
+        test_label_dataset = src_test_dataset.map(lambda x: x['faces']['blur'])
         # Join datasets.
     train_dataset = tf.data.Dataset.zip((train_img_dataset, train_box_dataset, train_label_dataset))
     train_dataset = train_dataset.map(scale_pad)
