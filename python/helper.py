@@ -89,10 +89,13 @@ def _scale_boxes(boxes, ss_asp_ratio, ls_asp_ratio, ss_frac_offset, ls_frac_offs
         scale_boxes = tf.transpose(tf.stack([r1, r2, r3, r4], axis=0))
     return scale_boxes
 
-def gen_datasets(data_set,src_train_dataset, src_test_dataset):
+def gen_datasets(data_set_class,src_train_dataset, src_test_dataset):
+    data_set = data_set_class[0]
+    
     # Define Training Datasets
     if data_set == "voc":
-       src_train_dataset=src_train_dataset.filter(lambda x: x['objects']['label'][0]==0)
+       voc_class = data_set_class[1]
+       src_train_dataset=src_train_dataset.filter(lambda x: x['objects']['label'][0]==voc_class)
     train_img_dataset = src_train_dataset.map(lambda x: x['image'])
     # convert to expected normalised input for VGG-16
     train_img_dataset = train_img_dataset.map(process_image)
@@ -108,7 +111,8 @@ def gen_datasets(data_set,src_train_dataset, src_test_dataset):
         
     # Define test Dataset
     if data_set == "voc":
-       src_test_dataset=src_test_dataset.filter(lambda x: x['objects']['label'][0]==0)
+       voc_class = data_set_class[1]
+       src_test_dataset=src_test_dataset.filter(lambda x: x['objects']['label'][0]==voc_class)
     test_img_dataset = src_test_dataset.map(lambda x: x['image'])
     test_img_dataset = test_img_dataset.map(process_image)
     if data_set == "voc":
