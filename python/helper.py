@@ -107,6 +107,8 @@ def gen_datasets(data_set,src_train_dataset, src_test_dataset):
         train_label_dataset = src_train_dataset.map(lambda x: x['faces']['blur'])
         
     # Define test Dataset
+    if data_set == "voc":
+       src_test_dataset=src_test_dataset.filter(lambda x: x['objects']['label'][0]==0)
     test_img_dataset = src_test_dataset.map(lambda x: x['image'])
     test_img_dataset = test_img_dataset.map(process_image)
     if data_set == "voc":
