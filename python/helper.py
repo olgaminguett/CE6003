@@ -92,7 +92,7 @@ def _scale_boxes(boxes, ss_asp_ratio, ls_asp_ratio, ss_frac_offset, ls_frac_offs
 def gen_datasets(data_set,src_train_dataset, src_test_dataset):
     # Define Training Datasets
     if data_set == "voc":
-       src_train_dataset=src_train_dataset.filter(lambda x: x['objects']['label'][0]="person")
+       src_train_dataset=src_train_dataset.filter(lambda x: x['objects']['label'][0]=="person")
     train_img_dataset = src_train_dataset.map(lambda x: x['image'])
     # convert to expected normalised input for VGG-16
     train_img_dataset = train_img_dataset.map(process_image)
